@@ -30,9 +30,9 @@ impl<H: Hasher<Out = H256>> TrieLayout for EIP1186Layout<H> {
 	type Codec = node_codec::RlpNodeCodec<H>;
 }
 
-/// Keccak hasher implementation, but only for std uses. You'd probably want to delegate
+/// Keccak hasher implementation with tiny-keccak. You'd probably want to delegate
 /// hashing to wasm host functions in `no_std`.
-#[cfg(feature = "std")]
+#[cfg(feature = "keccak")]
 pub mod keccak {
 	use super::*;
 	use hash256_std_hasher::Hash256StdHasher;
