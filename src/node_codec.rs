@@ -53,7 +53,7 @@ where
 	}
 
 	fn decode_plan(data: &[u8]) -> Result<NodePlan, Self::Error> {
-		if data == &HASHED_NULL_NODE {
+		if data == HASHED_NULL_NODE {
 			// early return if this is == keccak(rlp(null)), aka empty trie root
 			// source: https://ethereum.github.io/execution-specs/diffs/frontier_homestead/trie/index.html#empty-trie-root
 			return Ok(NodePlan::Empty)
@@ -105,13 +105,13 @@ where
 					None, None, None,
 				];
 
-				for index in 0..16 {
+				for (index, node) in nodes.iter_mut().enumerate() {
 					let (item, offset) = r.at_with_offset(index)?;
 					let i = item.payload_info()?;
 					if item.is_empty() {
-						nodes[index] = None;
+						*node = None;
 					} else {
-						nodes[index] = Some(NodeHandlePlan::Hash(
+						*node = Some(NodeHandlePlan::Hash(
 							(offset + i.header_len)..(offset + i.header_len + i.value_len),
 						));
 					}
